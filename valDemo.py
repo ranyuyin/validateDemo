@@ -7,11 +7,11 @@ from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
 from sklearn.model_selection import KFold
 from scipy.spatial.distance import cdist
-class MDC:
-    def __init__(self,l= 0.01):
-        self.l = l
+from sklearn.base import BaseEstimator, ClassifierMixin
+class MDC(BaseEstimator):
+    def __init__(self):
+        pass
     def fit(self,x,y,**kwargs):
-        self.l = kwargs['l']
         self.classlist=np.unique(y)
         dim=x.shape[1]
         self.means=np.zeros((len(self.classlist),dim))
@@ -22,8 +22,6 @@ class MDC:
         mins = cdist(x, self.means)
         outvalues = self.classlist[mins.argmin(axis=1)].reshape(-1,1)
         return outvalues
-    def get_params(self,deep = False):
-        return {'l': self.l}
 if __name__ == '__main__':
     rawfilename=r'D:\Desktop\ucas\遥感地学分析实验\data.tif'
     roiimgname=r'D:\Desktop\ucas\遥感地学分析实验\roi.tif'
@@ -37,14 +35,14 @@ if __name__ == '__main__':
     samples=samples.swapaxes(0,1)
     cv=KFold(n_splits=10, shuffle=True)
 
-    clf = svm.SVC(kernel='linear', C=1)
-    scores = cross_val_score(clf, samples, classlable, cv=cv, n_jobs=-1)
-    print("SVM Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+ #   clf = svm.SVC(kernel='linear', C=1)
+ #   scores = cross_val_score(clf, samples, classlable, cv=cv, n_jobs=-1)
+#    print("SVM Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
-    gnb = GaussianNB()
-    scores = cross_val_score(gnb,samples,classlable, cv=cv, n_jobs=-1)
-    print("Maximum Likelihood Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+#    gnb = GaussianNB()
+#    scores = cross_val_score(gnb,samples,classlable, cv=cv, n_jobs=-1)
+#    print("Maximum Likelihood Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
     mdc=MDC()
-    scores = cross_val_score(mdc, samples, classlable, cv=cv, n_jobs=-1, scoring='accuracy', fit_params={'l':0.1})
+    scores = cross_val_score(mdc, samples, classlable, cv=cv, n_jobs=-1, scoring='accuracy')
     print("Minimum Distance Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
