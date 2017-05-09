@@ -1,7 +1,6 @@
 #coding=utf-8
 import gdal
 import numpy as np
-from sklearn import preprocessing
 from sklearn.model_selection import cross_val_score
 from sklearn import svm
 from sklearn.naive_bayes import GaussianNB
@@ -35,13 +34,13 @@ if __name__ == '__main__':
     samples=samples.swapaxes(0,1)
     cv=KFold(n_splits=10, shuffle=True)
 
- #   clf = svm.SVC(kernel='linear', C=1)
- #   scores = cross_val_score(clf, samples, classlable, cv=cv, n_jobs=-1)
-#    print("SVM Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+    clf = svm.SVC(kernel='linear', C=1)
+    scores = cross_val_score(clf, samples, classlable, cv=cv, n_jobs=-1)
+    print("SVM Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
-#    gnb = GaussianNB()
-#    scores = cross_val_score(gnb,samples,classlable, cv=cv, n_jobs=-1)
-#    print("Maximum Likelihood Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
+    gnb = GaussianNB()
+    scores = cross_val_score(gnb,samples,classlable, cv=cv, n_jobs=-1)
+    print("Maximum Likelihood Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 2))
 
     mdc=MDC()
     scores = cross_val_score(mdc, samples, classlable, cv=cv, n_jobs=-1, scoring='accuracy')
